@@ -43,11 +43,13 @@ class Scanner {
     }
 
     private void addToken(TokenType type, Object literal)
+    // For handling tokens with literal values
     {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
     }
 
+    // Planning to use rule-based switch structures instead of the traditional ones because it's just better :)
     private void scanToken()
     {
         char c = advance();
@@ -82,32 +84,101 @@ class Scanner {
                 }
             }
 
-            default -> Lox.error(line, "Unexpected character.");
+            case ' ', '\r', '\t' -> {
+                // Ignore whitespace
+            }
+
+            case '"' -> string();
+
+            case '\n' -> line++;
+
+            default -> {
+                if (isDigit(c)) {
+                    number();
+                } else {
+                    Lox.error(line, "Unexpected character.");
+                }
+            }
+        }
+    }
+    
+    private boolean isDigit(char c)
+    {
+        return c >= '0' && c <= '9';
+    }
+
+    private void number()
+    {
+        while (isDigit(peek()))
+        {
+            advance();
         }
 
+        // Look for fractional part
+        if (peek() == '.' && isDigit(peekNext()))
+        {
+            advance(); //Consume the "."
+        }
+
+        while (isDigit(peek()))
+        {
+            advance();
+        }
+
+        addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
     
     private char peek()
     {
-        if (isAtEnd())
-        {
+        if (isAtEnd()) {
             return '\0';
         }
         return source.charAt(current);
     }
     
+    private char peekNext()
+    {
+        if (current + 1 >= source.length())
+        {
+            return '\0';
+        }
+        return source.charAt(current + 1);
+    }
+    
     private boolean match(char expected)
     {
-        if (isAtEnd())
-        {
+        if (isAtEnd()) {
             return false;
         }
-        if (source.charAt(current) != expected)
-        {
+        if (source.charAt(current) != expected) {
             return false;
         }
 
         current++;
         return true;
+    }
+    
+    private void string()
+    {
+        while (peek() != '"' && !isAtEnd())
+        {
+            if (peek() == '\n') {
+                line++;
+            }
+            advance();
+        }
+        
+        if (isAtEnd())
+        {
+            Lox.error(line, "Unterminated string.");
+            return;
+        }
+
+        // The closing ".
+        advance();
+
+        // Trim the surrounding quotes.
+        String value = source.substring(start + 1, current - 1);
+        addToken(TokenType.STRING, value);
     }
 }
