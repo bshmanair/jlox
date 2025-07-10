@@ -97,18 +97,24 @@ class Scanner {
             case '>' -> addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
 
             // Longer lexemes
-            case '/' -> {
-                if (match('/')) {
+            case '/' ->
+            {
+                if (match('/'))
+                {
                     // A comment goes until the end of the line.
-                    while (peek() != '\n' && !isAtEnd()) {
+                    while (peek() != '\n' && !isAtEnd())
+                    {
                         advance();
                     }
-                } else {
+                }
+                else
+                {
                     addToken(TokenType.SLASH);
                 }
             }
 
-            case ' ', '\r', '\t' -> {
+            case ' ', '\r', '\t' ->
+            {
                 // Ignore whitespace
             }
 
@@ -116,12 +122,18 @@ class Scanner {
 
             case '\n' -> line++;
 
-            default -> {
-                if (isDigit(c)) {
+            default ->
+            {
+                if (isDigit(c))
+                {
                     number();
-                } else if (isAlpha(c)) {
+                }
+                else if (isAlpha(c))
+                {
                     identifier();
-                } else {
+                }
+                else
+                {
                     Lox.error(line, "Unexpected character.");
                 }
             }
@@ -130,7 +142,8 @@ class Scanner {
     
     private void identifier()
     {
-        while (isAlphaNumeric(peek())) {
+        while (isAlphaNumeric(peek()))
+        {
             advance();
         }
 
@@ -200,10 +213,12 @@ class Scanner {
     
     private boolean match(char expected)
     {
-        if (isAtEnd()) {
+        if (isAtEnd())
+        {
             return false;
         }
-        if (source.charAt(current) != expected) {
+        if (source.charAt(current) != expected)
+        {
             return false;
         }
 
@@ -215,7 +230,8 @@ class Scanner {
     {
         while (peek() != '"' && !isAtEnd())
         {
-            if (peek() == '\n') {
+            if (peek() == '\n')
+            {
                 line++;
             }
             advance();
