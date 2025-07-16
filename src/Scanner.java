@@ -35,7 +35,7 @@ class Scanner {
         keywords.put("while", TokenType.WHILE);
     }
 
-    Scanner(String source)
+    Scanner(String source) // Constructor
     {
         this.source = source;
     }
@@ -97,24 +97,20 @@ class Scanner {
             case '>' -> addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
 
             // Longer lexemes
-            case '/' ->
-            {
-                if (match('/'))
-                {
+            case '/' -> {
+                if (match('/')) {
                     // A comment goes until the end of the line.
-                    while (peek() != '\n' && !isAtEnd())
-                    {
+                    while (peek() != '\n' && !isAtEnd()) {
                         advance();
                     }
-                }
-                else
-                {
+                } else if (match('*')) {
+                    blockComment();
+                } else {
                     addToken(TokenType.SLASH);
                 }
             }
 
-            case ' ', '\r', '\t' ->
-            {
+            case ' ', '\r', '\t' -> {
                 // Ignore whitespace
             }
 
@@ -122,22 +118,47 @@ class Scanner {
 
             case '\n' -> line++;
 
-            default ->
-            {
-                if (isDigit(c))
-                {
+            default -> {
+                if (isDigit(c)) {
                     number();
-                }
-                else if (isAlpha(c))
-                {
+                } else if (isAlpha(c)) {
                     identifier();
-                }
-                else
-                {
+                } else {
                     Lox.error(line, "Unexpected character.");
                 }
             }
         }
+    }
+    
+    private void blockComment()
+    {
+        int depth = 1;
+        while (!isAtEnd())
+        {
+            if (peek() == '\n') {
+                line++;
+            }
+
+            // Handling nexted comments - /*
+            if (peek() == '/' && peekNext() == '*') // opening
+            {
+                advance();
+                advance();
+                depth++;
+            } else if (peek() == '*' && peekNext() == '/') // closing
+            {
+                advance();
+                advance();
+                depth--;
+
+                if (depth == 0) {
+                    return;
+                }
+            } else {
+                advance();
+            }
+        }
+        Lox.error(line, "Unterminated nested block comment.");
     }
     
     private void identifier()

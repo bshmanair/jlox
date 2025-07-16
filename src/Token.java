@@ -15,7 +15,7 @@ class Token
         this.line = line;
     }
 
-    @Override
+    @Override // Original toString() parses values to string.
     public String toString()
     {
         return type + " " + lexeme + " " + literal;
