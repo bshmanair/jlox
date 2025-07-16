@@ -139,7 +139,7 @@ class Scanner {
                 line++;
             }
 
-            // Handling nexted comments - /*
+            // Handling nested comments - /*
             if (peek() == '/' && peekNext() == '*') // opening
             {
                 advance();
