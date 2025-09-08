@@ -1,4 +1,4 @@
-// package com.craftinginterpreters.lox;
+package com.craftinginterpreters.lox;
 
 class Token
 {
@@ -15,7 +15,7 @@ class Token
         this.line = line;
     }
 
-    @Override // Original toString() parses values to string.
+    @Override // Custom: Original toString() parses values to string.
     public String toString()
     {
         return type + " " + lexeme + " " + literal;

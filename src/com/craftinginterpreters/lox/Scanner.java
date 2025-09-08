@@ -1,4 +1,4 @@
-// package com.craftinginterpreters.lox;
+package com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,6 @@ class Scanner {
     static
     {
         keywords = new HashMap<>();
-
         keywords.put("and", TokenType.AND);
         keywords.put("class", TokenType.CLASS);
         keywords.put("else", TokenType.ELSE);
@@ -97,7 +96,8 @@ class Scanner {
             case '>' -> addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
 
             // Longer lexemes
-            case '/' -> {
+            case '/' ->
+            {
                 if (match('/')) {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) {
@@ -110,7 +110,8 @@ class Scanner {
                 }
             }
 
-            case ' ', '\r', '\t' -> {
+            case ' ', '\r', '\t' ->
+            {
                 // Ignore whitespace
             }
 
@@ -118,7 +119,8 @@ class Scanner {
 
             case '\n' -> line++;
 
-            default -> {
+            default ->
+            {
                 if (isDigit(c)) {
                     number();
                 } else if (isAlpha(c)) {

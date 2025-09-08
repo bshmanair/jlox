@@ -1,3 +1,4 @@
+package com.craftinginterpreters.lox;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -72,7 +73,7 @@ public class Lox
     private static void run(String source)
     {
         Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.scanTokens(); // TODO: Is this linked list?
+        List<Token> tokens = scanner.scanTokens();
 
         for (Token token : tokens)
         {
